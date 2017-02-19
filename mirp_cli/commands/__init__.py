@@ -1,0 +1,6 @@
+import command_firmware
+import command_init
+import command_update
+import command_monitor
+import command_list
+import command_import
