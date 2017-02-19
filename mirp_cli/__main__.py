@@ -26,25 +26,26 @@ from __init__ import (
 #from commands import *
 
 def dprint(*objects, level=1, eid=-1, sep=' ', end='\n', file=sys.stdout, flush=False):
-    def replace_newline(items, prepend_char):
+    def replace_newline(items, style):
         for i in items:
             if type(i).__name__ == "str":
-                i.replace("\n", prepend_char + "\t")
-                print(i.replace("\n", "\n" + prepend_char + "\t"), sep=sep, end=end,
+                i.replace("\n", style + "\t")
+                print(i.replace("\n", "\n" + style + "\t"), sep=sep, end=end,
                       file=file, flush=flush)
 
     if __debug_level__ >= level:
         if eid == -1:
-            print("-", end="\t")
+            print(text_style.normal, end="\t")
         elif eid == 0:
-            print(text_style.success + "+", end="\t")
+            print(text_style.success, end="\t")
         elif eid == 1:
-            print(text_style.warn + "*", end="\t")
+            print(text_style.warn, end="\t")
         elif eid == 2:
-            print(text_style.fail + "!", end="\t")
+            print(text_style.fail, end="\t")
         elif eid == 3:
-            print(text_style.ok + "#", end="\t")
-            replace_newline(objects, "#")
+            print("\n" + text_style.info, end="\t")
+            replace_newline(objects, text_style.info)
+            print("")
             return
         print(*objects, sep=sep, end=end, file=file, flush=flush)
         print(text_style.end, end="")
