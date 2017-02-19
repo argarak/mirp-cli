@@ -15,9 +15,9 @@
 
 from os.path import expanduser
 
-# Global variables
+# Global variables/classes/functions...
 __home__        = expanduser("~")
-__debug_level__ = 1
+__debug_level__ = 0
 
 class text_style:
     header  = '\033[95m'

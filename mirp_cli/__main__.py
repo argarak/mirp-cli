@@ -19,7 +19,9 @@ import sys
 import json
 import errno
 
-from __init__ import __debug_level__, __home__, text_style
+from __init__ import (
+    __debug_level__, __home__, text_style
+)
 
 #from commands import *
 
@@ -62,13 +64,17 @@ def create_config():
         if exception.errno != errno.EEXIST:
             return False
     dprint("Success!")
-    test_styles()
 
 @click.group(invoke_without_command=True)
 @click.pass_context
-def cli(ctx):
+@click.option('-v', '--verbose', count=True)
+def cli(ctx, verbose):
+    global __debug_level__
+    __debug_level__ = verbose
+
     if create_config() == False:
         dprint("Config exists!")
+    test_styles()
 
 if __name__ == "__main__":
     cli()
