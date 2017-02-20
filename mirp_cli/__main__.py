@@ -19,6 +19,8 @@ import sys
 import json
 import errno
 
+from pprint import pprint
+
 from __init__ import (
     __debug_level__, __home__, __default_dir__
 )
@@ -38,6 +40,18 @@ def test_styles():
     dprint("warning", eid=1)
     dprint("failure", eid=2)
     dprint("additional information\nthis can span many\nlines...", eid=3)
+
+@click.command("config", help="""
+Configuration-related utilities. Run `create` to make the configuration directory.
+""")
+@click.argument("action", type=click.Choice(["create"]))
+def config(action):
+    if action == "create":
+        if check_config() == False:
+            if create_config() == False:
+                dprint("Error creating configuration directory!", eid=2)
+            else:
+                dprint("Successfully created configuration directory.", eid=0, level=0)
 
 def create_config(nodes={}, config={}):
     dprint("Running create_config()")
@@ -61,17 +75,33 @@ def create_config(nodes={}, config={}):
 
     return True
 
+def check_config():
+    if not os.path.isdir(__home__ + __default_dir__):
+        return False
+    if not os.path.isfile(__home__ + __default_dir__ + "/nodes.json"):
+        return False
+    if not os.path.isfile(__home__ + __default_dir__ + "/config.json"):
+        return False
+    return True
+
 @click.group(invoke_without_command=True)
 @click.pass_context
-@click.option('-v', '--verbose', help="Sets the debug level for the program.", count=True)
+@click.option("-v", "--verbose", help="Sets the debug level for the program.", count=True)
 def cli(ctx, verbose):
     global __debug_level__
     __debug_level__ = verbose
 
     set_level(__debug_level__)
 
-    if create_config() == False:
-        dprint("Error creating configuration directory!", eid=2)
+    if ctx.invoked_subcommand != "config":
+        if check_config() == False:
+            dprint("Configuration not found! Run `mirp_cli config create` to generate.", eid=2)
+
+    if ctx.invoked_subcommand == None:
+        dprint("No commands specified! Run with --help to list all the commands avaliable.",
+               eid=1, level=0)
+
+cli.add_command(config)
 
 if __name__ == "__main__":
     cli()

@@ -30,6 +30,9 @@ def dprint(*objects, level=1, eid=-1, sep=' ', end='\n', file=sys.stdout, flush=
                 print(i.replace("\n", "\n" + style + "\t"), sep=sep, end=end,
                       file=file, flush=flush)
 
+    if eid == 2 or eid == 3:
+        level = 0
+
     if __debug_level__ >= level:
         if eid == -1:
             print(text_style.normal, end="\t")
