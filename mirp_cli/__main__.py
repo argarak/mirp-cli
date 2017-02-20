@@ -20,35 +20,17 @@ import json
 import errno
 
 from __init__ import (
-    __debug_level__, __home__, text_style
+    __debug_level__, __home__, __default_dir__
 )
 
-#from commands import *
+from utils.debug import dprint, set_level
 
-def dprint(*objects, level=1, eid=-1, sep=' ', end='\n', file=sys.stdout, flush=False):
-    def replace_newline(items, style):
-        for i in items:
-            if type(i).__name__ == "str":
-                i.replace("\n", style + "\t")
-                print(i.replace("\n", "\n" + style + "\t"), sep=sep, end=end,
-                      file=file, flush=flush)
-
-    if __debug_level__ >= level:
-        if eid == -1:
-            print(text_style.normal, end="\t")
-        elif eid == 0:
-            print(text_style.success, end="\t")
-        elif eid == 1:
-            print(text_style.warn, end="\t")
-        elif eid == 2:
-            print(text_style.fail, end="\t")
-        elif eid == 3:
-            print("\n" + text_style.info, end="\t")
-            replace_newline(objects, text_style.info)
-            print("")
-            return
-        print(*objects, sep=sep, end=end, file=file, flush=flush)
-        print(text_style.end, end="")
+#from command_firmware import firmware
+#from command_init import init
+#from command_update import update
+#from command_monitor import monitor
+#from commands.command_list import clist
+#from command_import import cimport
 
 def test_styles():
     dprint("normal")
@@ -57,25 +39,39 @@ def test_styles():
     dprint("failure", eid=2)
     dprint("additional information\nthis can span many\nlines...", eid=3)
 
-def create_config():
-    dprint("Trying to create directory...")
+def create_config(nodes={}, config={}):
+    dprint("Running create_config()")
     try:
-        os.makedirs(__home__ + "/.mirp")
+        os.makedirs(__home__ + __default_dir__)
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             return False
-    dprint("Success!")
+
+    dprint("Checking whether nodes.json exists...")
+    if not os.path.isfile(__home__ + __default_dir__ + "/nodes.json"):
+        with open(__home__ + __default_dir__ + "/nodes.json", "w") as f:
+            json.dump(nodes, f)
+            dprint("nodes.json created!", eid=0)
+
+    dprint("Checking whether config.json exists...")
+    if not os.path.isfile(__home__ + __default_dir__ + "/config.json"):
+        with open(__home__ + __default_dir__ + "/config.json", "w") as f:
+            json.dump(config, f)
+            dprint("config.json created!", eid=0)
+
+    return True
 
 @click.group(invoke_without_command=True)
 @click.pass_context
-@click.option('-v', '--verbose', count=True)
+@click.option('-v', '--verbose', help="Sets the debug level for the program.", count=True)
 def cli(ctx, verbose):
     global __debug_level__
     __debug_level__ = verbose
 
+    set_level(__debug_level__)
+
     if create_config() == False:
-        dprint("Config exists!")
-    test_styles()
+        dprint("Error creating configuration directory!", eid=2)
 
 if __name__ == "__main__":
     cli()

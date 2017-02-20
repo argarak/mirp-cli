@@ -13,9 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#from command_firmware import firmware
-#from command_init import init
-#from command_update import update
-#from command_monitor import monitor
-from commands.command_list import clist
-#from command_import import cimport
+class text_style:
+    normal  = " [-]"
+    header  = "\033[95m"
+    info    = "\033[94m [#]"
+    success = "\033[92m [+]"
+    warn    = "\033[93m [*]"
+    fail    = "\033[91m [!]"
+    end     = "\033[0m"
+    bold    = "\033[1m"
+    uline   = "\033[4m"

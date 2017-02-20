@@ -18,17 +18,7 @@ from os.path import expanduser
 # Global variables/classes/functions...
 __home__        = expanduser("~")
 __debug_level__ = 0
-
-class text_style:
-    normal  = " [-]"
-    header  = "\033[95m"
-    info    = "\033[94m [#]"
-    success = "\033[92m [+]"
-    warn    = "\033[93m [*]"
-    fail    = "\033[91m [!]"
-    end     = "\033[0m"
-    bold    = "\033[1m"
-    uline   = "\033[4m"
+__default_dir__ = "/.mirp"
 
 # Variables for setup.py
 __title__    = "mirp-cli"
