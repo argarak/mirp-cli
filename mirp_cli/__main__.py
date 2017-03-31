@@ -30,8 +30,8 @@ from utils.debug import dprint, set_level
 #from command_firmware import firmware
 #from command_init import init
 #from command_update import update
-#from command_monitor import monitor
-#from commands.command_list import clist
+from commands.command_monitor import monitor
+from commands.command_list import clist
 #from command_import import cimport
 
 def test_styles():
@@ -102,6 +102,8 @@ def cli(ctx, verbose):
                eid=1, level=0)
 
 cli.add_command(config)
+cli.add_command(clist)
+cli.add_command(monitor)
 
 if __name__ == "__main__":
     cli()
